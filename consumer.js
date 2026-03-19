@@ -7,6 +7,7 @@ async function receiveMail() {
 
         //asserting the queue to receive messages
         await channel.assertQueue('mail_queue', { durable: false });
+        await channel.assertQueue("subscribed_users_mail_queue" , {durable:false});
 
         //consuming messages from the queue
         channel.consume('mail_queue', (msg) => {
@@ -15,6 +16,14 @@ async function receiveMail() {
                 channel.ack(msg); //acknowledging the message after processing
             }
         });
+
+        channel.consume('subscribed_users_mail_queue', (msg) => {
+            if (msg !== null) {
+                console.log('Received message from the subscribed users queue:', JSON.parse(msg.content));
+                channel.ack(msg);
+            }
+        });
+        
     }
     catch (err) {
         console.log(err);
