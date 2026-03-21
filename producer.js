@@ -35,10 +35,9 @@ async function sendMail(){
         await channel.bindQueue("subscribed_users_mail_queue", exchange , routingKeyForSubscribedUsers);
 
         //sending data from exhange to the queue 
-        channel.publish(exchange, routingKeyForUsers, Buffer.from(JSON.stringify(msg)));
         channel.publish(exchange, routingKeyForSubscribedUsers, Buffer.from(JSON.stringify(msgForSubscribedUsers)));
 
-        console.log("Message sent to the queue" , msg);
+        // console.log("Message sent to the queue" , msg);
         console.log("Message sent to the subscribed users queue" , msgForSubscribedUsers);
 
         setTimeout(() => {
