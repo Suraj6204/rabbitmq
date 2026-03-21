@@ -1,3 +1,17 @@
+/*
+DIRECT EXCHANGE FLOW 
+
+PRODUCER -> EXCHANGE (DIRECT) -- (ROUTINGKEY) -> QUEUE (mail_queue) -> CONSUMER
+                            \                               
+                             \
+                              -- (ROUTINGKEY) -> QUEUE (subscribed_users_mail_queue) -> SUBSCRIBER CONSUMER
+
+*/
+
+
+
+
+
 const amqp = require("amqplib");
 
 async function sendMail(){
@@ -24,6 +38,8 @@ async function sendMail(){
             text: "This is a test email for subscribed users."
         };
 
+        //making the exchange of type direct
+        //durable false means that the exchange will not survive a broker restart
         await channel.assertExchange(exchange,"direct", {durable : false});
 
         await channel.assertQueue("mail_queue" , {durable:false});
@@ -34,7 +50,7 @@ async function sendMail(){
         await channel.bindQueue("mail_queue", exchange , routingKeyForUsers);
         await channel.bindQueue("subscribed_users_mail_queue", exchange , routingKeyForSubscribedUsers);
 
-        //sending data from exhange to the queue 
+        //sending data from exhange to the queue help of routing key
         channel.publish(exchange, routingKeyForSubscribedUsers, Buffer.from(JSON.stringify(msgForSubscribedUsers)));
 
         // console.log("Message sent to the queue" , msg);

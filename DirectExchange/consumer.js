@@ -5,7 +5,7 @@ async function receiveMail() {
         const connection = await amqp.connect('amqp://localhost');
         const channel = await connection.createChannel();
 
-        //asserting the queue to receive messages
+        //receiving the same queue to receive messages
         await channel.assertQueue('mail_queue', { durable: false });
 
         //consuming messages from the queue
